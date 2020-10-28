@@ -3,19 +3,22 @@ package com.example.elasticSearchAndRedis.config;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CachingConfigurerSupport;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisClusterConfiguration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.RedisPassword;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import lombok.extern.slf4j.Slf4j;
 
 @Configuration
-public class RedisConfiguration {
+@Slf4j
+@EnableCaching
+public class RedisConfiguration extends CachingConfigurerSupport {
 
     @Value("${spring.redis.host}")
     private String redisHost;
@@ -25,8 +28,6 @@ public class RedisConfiguration {
     private String redisMaster;
     @Value("${spring.redis.nodes}")
     private String redisNodes;
-    @Value("${cache.assets.expire.time:600}")
-    private Long assetsExpireTime;
     @Value("${redis.sentinel.mode}")
     private boolean redisMode;
     @Value("${spring.redis.jedis.pool.max-active:5000}")
@@ -34,21 +35,25 @@ public class RedisConfiguration {
     @Value("${spring.redis.jedis.pool.max-idle:8}")
     private int maxIdle;
 
+
     @Bean
     public JedisConnectionFactory connectionFactory() {
-        List<String> clusterNodes = Arrays.asList(redisHost.split(","));
+        log.info("::::::::::::JedisConnectionFactory:::::");
+        List<String> clusterNodes = Arrays.asList(redisNodes.split(","));
+        log.info(":::::clusterNodes {}", clusterNodes);
         if (clusterNodes.size() > 1) {
             return new JedisConnectionFactory(new RedisClusterConfiguration(clusterNodes));
         } else {
             RedisStandaloneConfiguration redisStandaloneConfiguration =
-                            new RedisStandaloneConfiguration(redisHost, redisPort);
+                            new RedisStandaloneConfiguration(clusterNodes.get(0), redisPort);
             return new JedisConnectionFactory(redisStandaloneConfiguration);
         }
     }
 
     @Bean
-    public RedisTemplate<Object, Object> redisTemplate() {
-        RedisTemplate<Object, Object> template = new RedisTemplate<>();
+    public RedisTemplate<String, Object> redisTemplate() {
+        log.info("::::::redisTemplate Bean creation::::::");
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory());
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
