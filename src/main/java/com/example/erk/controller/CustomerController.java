@@ -1,56 +1,33 @@
 package com.example.erk.controller;
 
-import java.io.IOException;
-import java.util.List;
+import javax.validation.Valid;
 
-import org.elasticsearch.action.search.SearchResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.example.erk.model.Customer;
-import com.example.erk.repository.ESRepository;
-import com.example.erk.service.QueryDSLService;
+import com.example.erk.model.reponse.CustomerCreateResponse;
+import com.example.erk.model.request.CustomerCreateRequest;
 
-import lombok.extern.slf4j.Slf4j;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
-@Slf4j
-@RestController
-@RequestMapping(value = "/search")
-public class CustomerController {
-	@Autowired
-	private QueryDSLService service;
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaPKMSTServerCodegen", date = "2021-04-16T06:00"
+		+ ":39.859Z")
+@Api(value = "CustomerController", description = "The CustomerRestController API")
+public interface CustomerController {
 
-	@Autowired
-	private ESRepository esRepository;
-
-	@GetMapping("/searchMultiField/{firstname}/{age}")
-	public List<Customer> serachByMultiField(@PathVariable String firstname, @PathVariable int age, Pageable pageable)
-			throws IOException {
-		log.info("-----Inside CustomerController Class, searchByMultiFiled method-----");
-		return service.searchMultiField(firstname, age, pageable);
-	}
-
-	@GetMapping("/customSearch/{firstName}")
-	public List<Customer> getCustomerByField(@PathVariable String firstName) throws IOException {
-		return service.getCustomerSerachData(firstName);
-	}
-
-	@GetMapping("/{text}")
-	public List<Customer> doMultimatchQuery(@PathVariable String text) throws IOException {
-		return service.multiMatchQuery(text);
-	}
-
-	@PostMapping("/save")
-	public ResponseEntity<?> saveDataToEs(@RequestBody Customer customer) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(esRepository.save(customer));
-	}
-
+	@ApiOperation(value = "Api to add a customer.", notes = "", response = CustomerCreateResponse.class, tags = {})
+	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created", response = CustomerCreateResponse.class),
+			@ApiResponse(code = 401, message = "Unauthorized"), @ApiResponse(code = 403, message = "Forbidden"),
+			@ApiResponse(code = 404, message = "Not Found") })
+	@RequestMapping(value = { "/v1.0/customers" }, produces = { "application/json" }, consumes = {
+			"application/json" }, method = RequestMethod.POST)
+	ResponseEntity<CustomerCreateResponse> addNewCustomerUsingPOST(
+			@ApiParam(value = "CustomerCreateRequest", required = true) @Valid @RequestBody CustomerCreateRequest customerCreateRequest)
+			throws Exception;
 }

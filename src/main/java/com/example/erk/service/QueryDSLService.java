@@ -1,14 +1,12 @@
 package com.example.erk.service;
 
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
-import com.example.erk.model.Customer;
-
 import java.io.IOException;
 import java.util.List;
 
-import org.elasticsearch.action.search.SearchResponse;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import com.example.erk.entity.Customer;
 
 @Service
 public interface QueryDSLService {

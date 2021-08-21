@@ -2,6 +2,8 @@ package com.example.erk.model;
 
 import java.util.List;
 
+import com.example.erk.entity.Customer;
+
 import lombok.Data;
 
 @Data
