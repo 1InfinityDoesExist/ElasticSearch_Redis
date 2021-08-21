@@ -1,4 +1,4 @@
-package com.example.elasticSearchAndRedis.model;
+package com.example.erk.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;

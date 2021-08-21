@@ -1,9 +1,9 @@
-package com.example.elasticSearchAndRedis.service;
+package com.example.erk.service;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.example.elasticSearchAndRedis.model.Customer;
+import com.example.erk.model.Customer;
 
 import java.io.IOException;
 import java.util.List;

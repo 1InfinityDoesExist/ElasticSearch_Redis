@@ -1,4 +1,4 @@
-package com.example.elasticSearchAndRedis.controller;
+package com.example.erk.controller;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.elasticSearchAndRedis.model.Customer;
-import com.example.elasticSearchAndRedis.repository.ESRepository;
-import com.example.elasticSearchAndRedis.service.QueryDSLService;
+import com.example.erk.model.Customer;
+import com.example.erk.repository.ESRepository;
+import com.example.erk.service.QueryDSLService;
 
 import lombok.extern.slf4j.Slf4j;
 

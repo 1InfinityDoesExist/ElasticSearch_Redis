@@ -1,4 +1,4 @@
-package com.example.elasticSearchAndRedis.service.impl;
+package com.example.erk.service.impl;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -19,8 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Component;
 
-import com.example.elasticSearchAndRedis.model.Customer;
-import com.example.elasticSearchAndRedis.service.QueryDSLService;
+import com.example.erk.model.Customer;
+import com.example.erk.service.QueryDSLService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
