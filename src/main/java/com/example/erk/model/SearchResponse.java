@@ -1,4 +1,4 @@
-package com.example.elasticSearchAndRedis.model;
+package com.example.erk.model;
 
 import java.util.List;
 
