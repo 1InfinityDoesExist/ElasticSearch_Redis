@@ -31,3 +31,11 @@ build/
 
 ### VS Code ###
 .vscode/
+/.attach_pid24080
+/.attach_pid4840
+/.gitignore
+/.mvn/
+/mvnw
+/mvnw.cmd
+/pom.xml
+/src/
