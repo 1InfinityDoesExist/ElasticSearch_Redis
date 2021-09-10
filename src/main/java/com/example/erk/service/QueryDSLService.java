@@ -17,4 +17,12 @@ public interface QueryDSLService {
 
 	public List<Customer> multiMatchQuery(String text) throws IOException;
 
+	public List<Customer> matchAllQuery(String query) throws IOException;
+
+	public List<Customer> match(String query) throws IOException;
+
+	public List<Customer> multiMatch(String query) throws IOException;
+
+	public List<Customer> regexQuery(String query) throws IOException;
+
 }
