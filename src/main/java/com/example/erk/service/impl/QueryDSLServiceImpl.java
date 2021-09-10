@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -123,4 +124,102 @@ public class QueryDSLServiceImpl implements QueryDSLService {
 		}).filter(Objects::nonNull).collect(Collectors.toList());
 	}
 
+	@Override
+	public List<Customer> matchAllQuery(String query) throws IOException {
+		QueryBuilder queryBuilder = QueryBuilders.matchAllQuery().queryName(query);
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder().query(queryBuilder);
+		SearchHits searchHits = client
+				.search(new SearchRequest("budodai").source(searchSourceBuilder), RequestOptions.DEFAULT).getHits();
+		return Arrays.stream(searchHits.getHits()).map(document -> {
+			Customer customer;
+			try {
+				customer = OBJECT_MAPPER.readValue(document.getSourceAsString(), Customer.class);
+				customer.setId(document.getId());
+				return customer;
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}).filter(Objects::nonNull).collect(Collectors.toList());
+
+	}
+
+	/*
+	 * Match query is a query that analyzes the text and constructs a query as the
+	 * result of the analysis.
+	 */
+	@Override
+	public List<Customer> match(String query) throws IOException {
+
+		QueryBuilder queryBuilder = QueryBuilders.boolQuery().must(QueryBuilders.matchQuery("firstName", query));
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder().query(queryBuilder).explain(true);
+		SearchHits searchHits = client
+				.search(new SearchRequest("budodai").source(searchSourceBuilder), RequestOptions.DEFAULT).getHits();
+		return Arrays.stream(searchHits.getHits()).map(document -> {
+			Customer customer;
+			try {
+				customer = OBJECT_MAPPER.readValue(document.getSourceAsString(), Customer.class);
+				customer.setId(document.getId());
+				return customer;
+			} catch (JsonProcessingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}).filter(Objects::nonNull).collect(Collectors.toList());
+	}
+
+	/**
+	 * Same as MatchQueryBuilder but supports multiple fields.
+	 * 
+	 * @throws IOException
+	 */
+
+	@Override
+	public List<Customer> multiMatch(String query) throws IOException {
+
+		QueryBuilder queryBuilder = QueryBuilders.multiMatchQuery(query).field("firstName").field("lastName");
+
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder().query(queryBuilder);
+
+		SearchResponse response = client.search(new SearchRequest("budodai").source(searchSourceBuilder),
+				RequestOptions.DEFAULT);
+
+		SearchHits searchHits = response.getHits();
+
+		return Arrays.stream(searchHits.getHits()).map(document -> {
+			Customer customer;
+			try {
+				customer = OBJECT_MAPPER.readValue(document.getSourceAsString(), Customer.class);
+				customer.setId(document.getId());
+				return customer;
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}).filter(Objects::nonNull).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<Customer> regexQuery(String query) throws IOException {
+		String regex = ".*" + query + ".*";
+		QueryBuilder queryBuilder = QueryBuilders.regexpQuery("firstName", regex);
+
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder().query(queryBuilder);
+		SearchResponse response = client.search(new SearchRequest("budodai").source(searchSourceBuilder),
+				RequestOptions.DEFAULT);
+		SearchHits searchHit = response.getHits();
+
+		return Arrays.stream(searchHit.getHits()).map(document -> {
+			Customer customer;
+			try {
+				customer = OBJECT_MAPPER.readValue(document.getSourceAsString(), Customer.class);
+				customer.setId(document.getId());
+				return customer;
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}).filter(Objects::nonNull).collect(Collectors.toList());
+	}
 }
